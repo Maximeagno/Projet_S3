@@ -1,12 +1,16 @@
 #ifndef __NEEDED_H_
 #define __NEEDED_H_
 
+#include "../Preprocess/pixel-from-image.h"
+#include "../Preprocess/pretraitement.h"
+#include "../Preprocess/binarization.h"
+#include "../Preprocess/text_blocks_detection.h"
 #include "../Preprocess/mainFunctions.h"
 
-struct matrix* preprocess(SDL_Surface* image);
-
-SDL_Surface* detection(struct matrix* matrix, SDL_Surface* image);
-
-struct matrix* GetMatrix(char* path);
+#include "../Preprocess/pixel-from-image.c"
+#include "../Preprocess/pretraitement.c"
+#include "../Preprocess/binarization.c"
+#include "../Preprocess/text_blocks_detection.c"
+#include "../Preprocess/mainFunctions.c"
 
 #endif

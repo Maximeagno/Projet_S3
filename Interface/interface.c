@@ -1,8 +1,8 @@
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-//#include "interface.h"
+#include "interface.h"
 
-GtkWidget       *window, *window2, *Image, *ContinueButton2;
+GtkWidget       *window, *window2, *window3, *Image, *ContinueButton2;
 GtkBuilder      *builder;
 GtkFileChooser  *selectImage;
 
@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
  
   window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
   window2 = GTK_WIDGET(gtk_builder_get_object(builder, "window_2"));
+  window3 = GTK_WIDGET(gtk_builder_get_object(builder, "window_3"));
   ContinueButton2 = GTK_WIDGET(gtk_builder_get_object(builder, "ContinueButton2"));
   selectImage = GTK_FILE_CHOOSER(gtk_builder_get_object(builder, "selectImage"));
   Image = GTK_WIDGET(gtk_builder_get_object(builder, "Image"));
@@ -68,11 +69,12 @@ void DisplayImage(GtkFileChooser *chooser, GtkImage *image) {
   gtk_file_chooser_set_filename(chooser, path);
 }
 
-/*void Start_Preprocess(GtkButton *button, GtkFileChooser *selectImage) {
+void Start_Preprocess(GtkButton *button, GtkFileChooser *selectImage) {
+  gtk_widget_hide(window2);
+  gtk_widget_show(window3);
   char *path = gtk_file_chooser_get_filename(selectImage);
-  struct matrix* res = GetMatrix(path);
-
-  print_matrix(res);
-
-  free_matrix(res);
-  }*/
+  struct vector* res = GetVector(path);
+  free_vector(res);
+  
+  gtk_button_set_label(button, "Continuer");
+}
