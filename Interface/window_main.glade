@@ -33,8 +33,11 @@
           <object class="GtkFileChooserButton" id="selectImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">
+</property>
             <property name="title" translatable="yes"/>
             <signal name="file-set" handler="DisplayImage" object="Image" swapped="no"/>
+            <signal name="file-set" handler="UnlockBinarizationButton" swapped="no"/>
             <signal name="file-set" handler="UnlockGreyScaleButton" swapped="no"/>
           </object>
           <packing>
@@ -44,14 +47,43 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="Image">
-            <property name="width_request">640</property>
-            <property name="height_request">480</property>
+          <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <property name="stock">gtk-missing-image</property>
+            <child>
+              <object class="GtkImage" id="Image">
+                <property name="width_request">600</property>
+                <property name="height_request">400</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="Label">
+                <property name="width_request">200</property>
+                <property name="height_request">400</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">15</property>
+                <property name="margin_right">15</property>
+                <property name="margin_top">15</property>
+                <property name="margin_bottom">15</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="label" translatable="yes">azeazea</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -61,9 +93,12 @@
         </child>
         <child>
           <object class="GtkGrid">
+            <property name="width_request">50</property>
+            <property name="height_request">50</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
+            <property name="row_homogeneous">True</property>
             <property name="column_homogeneous">True</property>
             <child>
               <object class="GtkButton" id="grey_scale_button">
@@ -74,7 +109,6 @@
                 <property name="receives_default">True</property>
                 <property name="hexpand">True</property>
                 <signal name="clicked" handler="GreyScale" object="selectImage" swapped="no"/>
-                <signal name="clicked" handler="UnlockBinarizationButton" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -83,7 +117,7 @@
             </child>
             <child>
               <object class="GtkButton" id="binarization_button">
-                <property name="label" translatable="yes">Binarization</property>
+                <property name="label" translatable="yes">Binarize</property>
                 <property name="height_request">-1</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -116,11 +150,9 @@
               <object class="GtkButton" id="save_button">
                 <property name="label" translatable="yes">Save</property>
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
+                <signal name="clicked" handler="Save" object="Label" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -187,6 +219,8 @@ Thibault Buatois</property>
         <child>
           <object class="GtkButton" id="ContinueButton">
             <property name="label" translatable="yes">Continue</property>
+            <property name="width_request">50</property>
+            <property name="height_request">50</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
