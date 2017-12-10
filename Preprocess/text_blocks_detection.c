@@ -2,7 +2,7 @@
 
 # include "text_blocks_detection.h"
 
-SDL_Surface* lines(SDL_Surface* image, unsigned c)
+SDL_Surface* lines(SDL_Surface* image)
 {
   unsigned w = (unsigned)(image->w);
   unsigned h = (unsigned)(image->h);
@@ -16,7 +16,7 @@ SDL_Surface* lines(SDL_Surface* image, unsigned c)
       if (GetPixel(image, n, j) == 0)
         nb++;
     }
-    if (nb <= c)
+    if (nb <= 0)
     {
       if (count > 0)
       {

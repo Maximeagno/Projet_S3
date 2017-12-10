@@ -8,7 +8,7 @@
 
 int Save(struct network net, char *fichier)
 {
-//procedure: nbL, nbNeurons pour chaque layer, biais, weights de chaque neuron
+//procedure: error, epochs, rate, momentum, nbL, nbNeurons pour chaque layer, biais, weights de chaque neuron
   FILE *file = NULL;
   file = fopen(fichier, "w");
 
@@ -53,20 +53,17 @@ struct network Get(char *fichier)
 
   char line[SIZE] = "";
   fgets(line, SIZE, file);
-//  printf("%s", line);
   fscanf(file, "%lf\n", &(n.error));
   fscanf(file, "%zu\n", &(n.epochs));
   fscanf(file, "%lf\n", &(n.rate));
   fscanf(file, "%lf\n", &(n.momentum));
   fscanf(file, "%zu\n", &n.nbLayers);
-//  printf("nblayers = %zu\n", n.nbLayers);
 
   n.layers = calloc(n.nbLayers, sizeof(struct layer));
   for (size_t l = 0; l < n.nbLayers; l++)
   {
     fscanf(file, "%zu\n", &(n.layers[l].nbNeurons));
     n.layers[l].neurons = calloc(n.layers[l].nbNeurons, sizeof(struct neuron));
-//    printf("layer %zu: %zu neurons\n", l, n.layers[l].nbNeurons);
   }
 
   for (size_t l = 1; l < n.nbLayers; l++)
@@ -78,223 +75,19 @@ struct network Get(char *fichier)
         fscanf(file, "%lf\n", &(n.layers[l].neurons[i].weights[j]));
     }
 
-  int err = fclose(file); //0 si OK
+  if (fclose(file))
+    return n;
 
   return n;
 }
 
 static void initWeights(struct network temp)
 {
-  //init weights
   for (size_t l = 1; l < temp.nbLayers; l++)
     for (size_t i = 0; i < temp.layers[l].nbNeurons; i++)
       for (size_t j = 0; j < temp.layers[l-1].nbNeurons; j++)
         temp.layers[l].neurons[i].weights[j] = 2*((double)rand()/(double)RAND_MAX - 0.5);
 }
-/*
-void Best(size_t nbEx, size_t nbI, size_t nbO, double **inputs, double **outputs)
-{
-  FILE *file = NULL;
-  char *filename = "best.txt";
-  file = fopen(filename, "r");
-  struct network net;
-  if (file)
-  {
-    fclose(file);
-    net = Get(filename);
-  }
-  else
-  {
-    fclose(file);
-    net = init(3, nbI, nbO, 2);
-    net = backprop(net, inputs, outputs, nbEx);
-  }
-
-
-
-*
-//change nbInt
-  size_t nbIntP = nbInt*2;
-  size_t nbIntM = nbInt/2;
-
-  struct network plus = init(3, nbI, nbO, nbIntP);
-  backprop(net, inputs, outputs, nbEx);
-
-  struct network moins = init(3, nbI, nbO, nbIntM);
-  backprop(net, inputs, outputs, nbEx);
-
-  struct network save;
-
-  while (nbIntP != nbIntM)
-  {
-    struct network end;
-    if (plus.epochs < moins.epochs)
-      end = plus;
-    else
-      end = moins;
-    if (end.epochs < net.epochs)
-    {
-      save = net;
-      if (moins.epochs < plus.epochs)
-      {
-        moins = //2 - long
-        plus = //2 + mid
-      }
-      else
-      {
-        moins = //3 - mid
-        plus = //3 + long
-      }
-    }
-    else //net = min
-    {
-      save = end;
-      nbIntP = net.layers[1].nbNeurons + (end.layers[1].nbNeurons + net.layers[1].nbNeurons)/2;
-      nbIntM = net.layers[1].nbNeurons - (end.layers[1].nbNeurons + net.layers[1].nbNeurons)/2;
-    }
-
-    plus = init(3, nbI, nbO, nbIntP);
-    moins = init(3, nbI, nbO, nbIntM);
-    backprop(moins, inputs, outputs, nbEx);
-    backprop(plus, inputs, outputs, nbEx);
-  }
-*
-
-
-  struct network saved = net;
-printf("\nEpochs of saved : %zu\n\n", saved.epochs);
-
-
-*
-//boucle rate
-  double rate = 0.01;
-  for (size_t i = 0; i < 100; i++)
-  {
-    struct network temp = saved;
-
-    initWeights(temp);
-
-    temp.rate = rate;
-    rate += 0.01;
-
-    temp = backprop(temp, inputs, outputs, nbEx);
-
-    if (temp.epochs < saved.epochs && temp.epochs > 20)
-      saved = temp;
-  }
-printf("\nfin rate, rate = %lf, epochs saved = %zu\n\n", saved.rate, saved.epochs);
-test(saved, nbEx, inputs);
-printf("\n\n");
-*
-
-//boucle nbLayers
-  size_t nbLayers = saved.nbLayers;
-  for (size_t nbl = 0; nbl < 5; nbl++)
-  {
-    //new network with new nbLayers
-    struct network temp2 = saved;
-
-    temp2.nbLayers = nbLayers;
-    temp2.layers = realloc(temp2.layers, nbLayers * sizeof(struct layer));
-
-    //temp2.layers[temp2.nbLayers-1] = temp2.layers[temp2.nbLayers-2];
-    if (nbLayers != saved.nbLayers)
-    {
-      temp2.layers[temp2.nbLayers-1].nbNeurons = temp2.layers[temp2.nbLayers-2].nbNeurons;
-    }
-
-    temp2.layers[temp2.nbLayers-2].nbNeurons = 2;
-    temp2.layers[temp2.nbLayers-2].neurons = realloc(temp2.layers[temp2.nbLayers-2].neurons, 2 * sizeof(struct neuron));
-
-//printf("nbL = %zu\n", temp2.nbLayers);
-//printf("%lf\n", temp2.layers[2].neurons[1].weights[0]);
-    for (size_t i = 0; i < temp2.layers[temp2.nbLayers-2].nbNeurons; i++)
-    {
-      temp2.layers[temp2.nbLayers-2].neurons[i].output = 0;
-      temp2.layers[temp2.nbLayers-2].neurons[i].bias = 2* ((double)rand() / (double)RAND_MAX - 0.5);
-      temp2.layers[temp2.nbLayers-2].neurons[i].weights = realloc(temp2.layers[temp2.nbLayers-2].neurons[i].weights, temp2.layers[temp2.nbLayers-3].nbNeurons * sizeof(double));
-      temp2.layers[temp2.nbLayers-2].neurons[i].error = 0;
-    }
-
-//printf("%lf\n", temp2.layers[2].neurons[2].weights[0]);
-    initWeights(temp2);
-
-printf("OK\n");
-    temp2 = backprop(temp2, inputs, outputs, nbEx);
-
-
-    nbLayers++;
-
-
-  //boucle nbNeuronsInt
-    size_t *nbInt = calloc(temp2.nbLayers-2, sizeof(size_t));
-    for (size_t i = 0; i < temp2.nbLayers-2; i++)
-      nbInt[i] = 0;
-    for (size_t e = 0; e < 200; e++)
-    {
-      struct network temp = temp2;
-
-      for (size_t l = 1; l < temp.nbLayers-1; l++)
-      {
-        temp.layers[l].nbNeurons = temp2.layers[l].nbNeurons + nbInt[l-1];
-        nbInt[l-1] += 1;
-        temp.layers[l].neurons = realloc(temp.layers[l].neurons, temp.layers[l].nbNeurons * sizeof(struct neuron));
-        for (size_t i = temp2.layers[l].nbNeurons; i < temp.layers[l].nbNeurons; i++)
-        {
-          temp.layers[l].neurons[i].output = 0;
-          temp.layers[l].neurons[i].bias = 2* ((double)rand() / (double)RAND_MAX - 0.5);
-
-          temp.layers[l].neurons[i].weights = realloc(temp.layers[l].neurons[i].weights, net.layers[l-1].nbNeurons * sizeof(double));
-          temp.layers[l].neurons[i].error = 0;
-        }
-printf("tour et nbInt = %zu\n", nbInt[l-1]);
-      }
-
-printf("e = %zu, nbInt = %zu\n", e, temp2.layers[1].nbNeurons + nbInt[0]);
-
-      initWeights(temp);
-
-      temp = backprop(temp, inputs, outputs, nbEx);
-
-      if (temp.epochs < temp2.epochs && temp.epochs > 20)
-        temp2 = temp;
-    }
-
-printf("OK4\n");
-
-    if (temp2.epochs < saved.epochs && temp2.epochs > 20)
-      saved = temp2;
-  }
-
-printf("OK5\n");
-
-//boucle momemtum
-  double momemtum = 0;
-  for (size_t i = 0; i < 20; i++)
-  {
-    struct network temp = saved;
-
-    initWeights(temp);
-
-    temp.momemtum = momemtum;
-    momemtum += 0.0005;
-
-    temp = backprop(temp, inputs, outputs, nbEx);
-
-    if (temp.epochs < saved.epochs && temp.epochs > 20)
-    {
-      printf("Epochs = %zu\n", temp.epochs);
-      saved = temp;
-    }
-  }
-
-printf("\nfin momemtum, epochs saved = %zu\n\n", saved.epochs);
-test(saved, nbEx, inputs);
-printf("\n\n");
-
-
-  Save(saved, filename);
-}*/
 
 int meilleur(struct network new, struct network prev)
 {

@@ -113,7 +113,7 @@ struct network backprop(struct network net, double **inputs, double **outputs, s
   double error = 1;
   size_t epoch = 0;
 
-  while (error > 0.0005)
+  while (error > 0.0005) //0.0005)
   {
     error = 0;
 

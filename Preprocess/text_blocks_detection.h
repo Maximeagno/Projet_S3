@@ -6,9 +6,7 @@
 # include "pretraitement.h"
 # include "binarization.h"
 
-SDL_Surface* rlsax(SDL_Surface* image, unsigned c);
-
-SDL_Surface* lines(SDL_Surface* image, unsigned c);
+SDL_Surface* lines(SDL_Surface* image);
 
 SDL_Surface* columns(struct matrix* matrix, SDL_Surface* image);
 

@@ -13,7 +13,7 @@ struct matrix* preprocess(SDL_Surface* image)
 
 SDL_Surface* detection(struct matrix* matrix, SDL_Surface* image)
 {
-  image = lines(image, 0);//matrix->h / 50);
+  image = lines(image);
   image = columns(matrix, image);
   display_image(image);
   return image;
