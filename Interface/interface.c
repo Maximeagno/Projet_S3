@@ -26,11 +26,6 @@ int main(int argc, char *argv[])
 }
 
 void Quit() {
-  //gtk_widget_destroy(Image);
-  //gtk_widget_destroy(selectImage);
-  //gtk_widget_destroy(window);
-  //g_free(window2);
-  //g_free(builder);
   gtk_main_quit();
 }
 
@@ -39,17 +34,24 @@ void on_ContinueButton_clicked() {
   gtk_widget_show(window2);
 }
 
-void UnlockGreyScaleButton() {
+void UnlockBinarizationButton() {
   GtkWidget *GreyScale_button = GTK_WIDGET(gtk_builder_get_object(builder, "grey_scale_button"));
   gtk_widget_set_sensitive(GreyScale_button, TRUE);
 }
 
-void UnlockBinarizationButton() {
-  GtkWidget *Binarization_button = GTK_WIDGET(gtk_builder_get_object(builder, "binarization_button"));
-  gtk_widget_set_sensitive(Binarization_button, TRUE);
+void UnlockSegmentationButton() {
+  GtkWidget *segmentation_button = GTK_WIDGET(gtk_builder_get_object(builder, "segmentation_button"));
+  gtk_widget_set_sensitive(segmentation_button, TRUE);
 }
 
-
+void UnlockRButton() {
+  GtkWidget *run_button = GTK_WIDGET(gtk_builder_get_object(builder, "run"));
+  gtk_widget_set_sensitive(run_button, TRUE);
+}
+void UnlockSButton() {
+  GtkWidget *save_button = GTK_WIDGET(gtk_builder_get_object(builder, "save_button"));
+  gtk_widget_set_sensitive(save_button, TRUE);
+}
 GdkPixbuf *ResizeImage(GdkPixbuf *pixbuf)
 {
   int orig_width = gdk_pixbuf_get_width(pixbuf);
@@ -78,8 +80,8 @@ void DisplayImage(GtkFileChooser *chooser, GtkImage *image) {
   g_free(path);
 }
 
-void GreyScale(GtkButton *button, GtkFileChooser *selectImage) {
-  gtk_button_set_label(button, "Grey Scale");
+void Binarization(GtkButton *button, GtkFileChooser *selectImage) {
+  gtk_button_set_label(button, "Binarization");
   char *path = gtk_file_chooser_get_filename(selectImage);
   SDL_Surface* image = load_image(path);
   image = black_white(grey_level(image));
@@ -92,18 +94,16 @@ void GreyScale(GtkButton *button, GtkFileChooser *selectImage) {
   GdkPixbuf *new_pixbuf = ResizeImage(pixbuf);
   gtk_image_set_from_pixbuf(image1, new_pixbuf);
 
-  //g_object_unref(pixbuf);
-  g_object_unref(new_pixbuf);
   SDL_FreeSurface(image);
 }
 
 SDL_Surface* detection_gtk(struct matrix* matrix, SDL_Surface* image) {
-  image = lines(image, 0);
+  image = lines(image);
   image = columns(matrix, image);
   return image;
 }
-void Binarization(GtkButton *button, GtkImage *img) {
-  gtk_button_set_label(button, "Binarize");
+void Segmentation(GtkButton *button, GtkImage *img) {
+  gtk_button_set_label(button, "Segmentation");
   SDL_Surface* image = load_image("image_1.bmp");
   struct matrix* res = binarization(image);
   image = detection_gtk(res, image);
@@ -116,12 +116,7 @@ void Binarization(GtkButton *button, GtkImage *img) {
   GdkPixbuf *pixbuf = gtk_image_get_pixbuf(img);
   GdkPixbuf *new_pixbuf = ResizeImage(pixbuf);
   gtk_image_set_from_pixbuf(img, new_pixbuf);
-
-  //struct vector *vect = blocks_detection(matrix, image);
-
-  //free_vector(res);
-  //g_object_unref(pixbuf);
-  g_object_unref(new_pixbuf);
+  
   free_matrix(res);
   SDL_FreeSurface(image);
 }

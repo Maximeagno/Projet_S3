@@ -1,5 +1,5 @@
 # Makefile
-CC=gcc -fsanitize=address
+CC=gcc #-fsanitize=address
 
 CPPFLAGS= -MMD
 CFLAGS= -Wall -Wextra -Werror -std=c99 `pkg-config --cflags sdl` `pkg-config --cflags gtk+-3.0`

@@ -158,7 +158,7 @@ void trainNetwork(size_t nbEx, size_t dim, double **inputs, double **outputs, in
   if (saved)
     net = Get(filename);
   else
-    net = init(3, dim, 66, 80);
+    net = init(3, dim, 66, 130);
 
   net = backprop(net, inputs, outputs, nbEx);
 
@@ -185,9 +185,17 @@ void trainAll(size_t nbFile, size_t* nbEx, size_t dim, double ***inputs, double 
   {
     err = 0;
     for (size_t f = 0; f < nbFile; f++)
-    {
       net = backprop(net, inputs[f], outputs[f], nbEx[f]);
-      err += net.error;
+
+    for (size_t f = 0; f < nbFile; f++)
+    {
+      double e = 0;
+      for (size_t i = 0; i < nbEx[f]; i++)
+      {
+        feedforward(net, inputs[f][i]);
+        e += ComputeErrors(net, outputs[f][i]);
+      }
+      err += e / nbEx[f];
     }
     err /= nbFile;
   }
@@ -196,6 +204,16 @@ void trainAll(size_t nbFile, size_t* nbEx, size_t dim, double ***inputs, double 
     printf("pas possible");
 
   freeNetwork(net);
+}
+
+//#define nbletters = 20
+
+char* Interface(char* filename, char* network)
+{
+  size_t nbletters = 20;
+  double **inputs = calloc(nbletters, sizeof(double*));
+  GetInputs(nbletters, filename, 50*50, inputs);
+  return GetStringFromNetwork(nbletters, inputs, network);
 }
 
 char* GetStringFromNetwork(size_t nbEx, double **inputs, char *filename)

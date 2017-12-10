@@ -19,6 +19,8 @@ void trainNetwork(size_t nbEx, size_t dim, double **inputs, double **outputs, in
 
 void trainAll(size_t nbFile, size_t* nbEx, size_t dim, double ***inputs, double ***outputs, int saved, char *filename);
 
+char* Interface(char* filename, char* network);
+
 char* GetStringFromNetwork(size_t nbEx, double **inputs, char *filename);
 
 #endif
