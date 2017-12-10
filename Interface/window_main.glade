@@ -78,7 +78,6 @@
                 <property name="margin_bottom">15</property>
                 <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
-                <property name="label" translatable="yes">azeazea</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -141,6 +140,7 @@
                 <property name="receives_default">True</property>
                 <property name="hexpand">True</property>
                 <property name="vexpand">False</property>
+                <signal name="clicked" handler="Run" object="Label" swapped="no"/>
                 <signal name="clicked" handler="UnlockSButton" swapped="no"/>
               </object>
               <packing>

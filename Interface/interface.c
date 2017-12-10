@@ -164,3 +164,12 @@ void SaveLabel(GtkButton *button, GtkLabel *label)
 
   gtk_widget_destroy (dialog);
 }
+
+void Run(GtkButton *button, GtkLabel *label) {
+  gtk_button_set_label(button, "Run OCR");
+  GtkFileChooser *selectImage = GTK_FILE_CHOOSER(gtk_builder_get_object(builder, "selectImage"));
+  char *path = gtk_file_chooser_get_filename(selectImage);
+  char *text = Interface(path, "../ReseauNew/trainAll.txt");
+  gtk_label_set_text(label, text);
+  g_free(path);
+}

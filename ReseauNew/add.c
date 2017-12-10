@@ -47,6 +47,7 @@ struct network Get(char *fichier)
 
   if (file == NULL)
   {
+    printf("%s\n", fichier);
     printf("impossible\n");
     return n;
   }
