@@ -114,13 +114,13 @@ void printOutAlph(struct network net)
         printf("output = '$'\n");
         break;
       case 62:
-        printf("output = '\%'\n");
+        printf("output = %% \n");
         break;
       case 63:
         printf("output = '_'\n");
         break;
       default:
-        printf("output = error, char = %c\n", end[0]);
+        printf("output = error, char = %c\n", (int)end[0]);
         break;
     }
 

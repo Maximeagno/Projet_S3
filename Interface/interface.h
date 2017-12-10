@@ -5,6 +5,9 @@
 #include <stdlib.h>
 
 #include "../Preprocess/mainFunctions.h"
+#include "../ReseauNew/alphabet.h"
+#include "../ReseauNew/add.h"
+#include "../ReseauNew/class.h"
 
 void Quit();
 void on_ContinueButton_clicked();
@@ -17,5 +20,5 @@ void DisplayImage(GtkFileChooser *chooser, GtkImage *image);
 void Binarization(GtkButton *button, GtkFileChooser *selectImage);
 SDL_Surface* detection_gtk(struct matrix* matrix, SDL_Surface* image);
 void Segmentation(GtkButton *button, GtkImage *img);
-
+void SaveLabel(GtkButton *button, GtkLabel *label);
 #endif

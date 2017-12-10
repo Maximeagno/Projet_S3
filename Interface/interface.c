@@ -121,7 +121,7 @@ void Segmentation(GtkButton *button, GtkImage *img) {
   SDL_FreeSurface(image);
 }
 
-void Save(GtkButton *button, GtkLabel *label)
+void SaveLabel(GtkButton *button, GtkLabel *label)
 {
   gtk_button_set_label(button, "Save");
   GtkWindow *window_parent = GTK_WINDOW(gtk_builder_get_object(builder, "window_2"));
