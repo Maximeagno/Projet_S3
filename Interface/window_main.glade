@@ -35,7 +35,7 @@
             <property name="can_focus">False</property>
             <property name="title" translatable="yes"/>
             <signal name="file-set" handler="DisplayImage" object="Image" swapped="no"/>
-            <signal name="file-set" handler="UnlockButton" swapped="no"/>
+            <signal name="file-set" handler="UnlockGreyScaleButton" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -45,8 +45,12 @@
         </child>
         <child>
           <object class="GtkImage" id="Image">
+            <property name="width_request">640</property>
+            <property name="height_request">480</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
             <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
@@ -56,17 +60,78 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="ContinueButton2">
-            <property name="label" translatable="yes">Continuer</property>
+          <object class="GtkGrid">
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <signal name="clicked" handler="Start_Preprocess" object="selectImage" swapped="no"/>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="column_homogeneous">True</property>
+            <child>
+              <object class="GtkButton" id="grey_scale_button">
+                <property name="label" translatable="yes">Grey Scale</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="hexpand">True</property>
+                <signal name="clicked" handler="GreyScale" object="selectImage" swapped="no"/>
+                <signal name="clicked" handler="UnlockBinarizationButton" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="binarization_button">
+                <property name="label" translatable="yes">Binarization</property>
+                <property name="height_request">-1</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="hexpand">True</property>
+                <signal name="clicked" handler="Binarization" object="Image" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="run">
+                <property name="label" translatable="yes">Run OCR</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="save_button">
+                <property name="label" translatable="yes">Save</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
+            <property name="fill">False</property>
+            <property name="pack_type">end</property>
             <property name="position">3</property>
           </packing>
         </child>
@@ -121,7 +186,7 @@ Thibault Buatois</property>
         </child>
         <child>
           <object class="GtkButton" id="ContinueButton">
-            <property name="label" translatable="yes">Continuer</property>
+            <property name="label" translatable="yes">Continue</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
