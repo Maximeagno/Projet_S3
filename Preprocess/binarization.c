@@ -53,26 +53,6 @@ struct matrix* resize(struct matrix* matrix)
   return res;
 }
 
-/*
-struct matrix* char_list(SDL_Surface* image)
-{
-  unsigned w = (unsigned)(image->w);
-  unsigned h = (unsigned)(image->h);
-  //Uint8 mat[w * h];
-  binarization(image);
-  struct matrix* *charlist = malloc(sizeof(struct matrix*) * w * h);
-  for (unsigned y = 0; y < h; y++)
-    for (unsigned x = 0; x < w; x++)
-    {
-      if (GetPixel(image, x, y) == 0)
-      {
-        
-      }
-    }
-  return charlist;
-}
-*/
-
 void print_matrix(struct matrix* matrix)
 {
   unsigned w = matrix->w;
@@ -80,12 +60,10 @@ void print_matrix(struct matrix* matrix)
   for (unsigned y = 0; y < h; y++)
   {
     for (unsigned x = 0; x < w; x++)
-    {
       if (matrix->mat[x + y * w])
-        printf("1");
+        printf("1 ");
       else
-        printf(" ");
-    }
+        printf("  ");
     printf("\n");
   }
 }

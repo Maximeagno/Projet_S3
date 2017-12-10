@@ -28,10 +28,9 @@ int main(int argc, char *argv[])
 }
 
 void Quit() {
-  //g_free(Image);
-  //g_free(ContinueButton2);
-  //g_free(selectImage);
-  //g_free(window);
+  //gtk_widget_destroy(Image);
+  //gtk_widget_destroy(selectImage);
+  //gtk_widget_destroy(window);
   //g_free(window2);
   //g_free(window3);
   //g_free(builder);

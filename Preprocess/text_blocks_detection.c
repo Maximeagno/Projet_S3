@@ -139,10 +139,31 @@ void vector_add(struct vector* vect, struct matrix* elm)
   vect->tab[vect->size - 1] = elm;
 }
 
-/*struct vector* spaces(SDL_Surface* image, unsigned y)
+unsigned insert(Uint8 elm, struct matrix* matrix, unsigned count)
+{
+  unsigned i = 0;
+  while (i < count && matrix->mat[i] < elm)
+    i++;
+  if (matrix->mat[i] != elm)
+  {
+    if (matrix->mat[i] > elm)
+    {
+      for (unsigned j = count - 1; j > i; j--)
+      {
+        matrix->mat[j + 1] = matrix->mat[j];
+      }
+      matrix->mat[i + 1] = matrix->mat[i];
+    }
+    matrix->mat[i] = elm;
+    count++;
+  }
+  return count;
+}
+
+struct matrix* spaces_list(SDL_Surface* image, unsigned y)
 {
   struct vector* vect = init_vector(10);
-  Uint8 counting = 0;
+  Uint8 counting =  0;
   Uint8 count = 0;
   for (unsigned x = 0; x < (unsigned)(image->h); x++)
   {
@@ -153,15 +174,9 @@ void vector_add(struct vector* vect, struct matrix* elm)
       if (counting == 2)
       {
         counting = 1;
-        unsigned i = 0;
-        while (i < vect->size && vect->tab[i]->mat[0] != count)
-          i++;
-        if (i == vect->size)
-        {
-          struct matrix* space = init_matrix(1, 1);
-          space->mat[0] = count;
-          vector_add(vect, space);
-        }
+        struct matrix* space = init_matrix(1, 1);
+        space->mat[0] = count;
+        vector_add(vect, space);
         count = 0;
       }
     }
@@ -176,8 +191,18 @@ void vector_add(struct vector* vect, struct matrix* elm)
         count++;
     }
   }
-  return vect;
-}*/
+  struct matrix* spaces = init_matrix(vect->size, 1);
+  unsigned c = 0;
+  for (unsigned i = 0; i < vect->size; i++)
+  {
+    Uint8 elm = vect->tab[i]->mat[0];
+    c = insert(elm, spaces, c);
+  }
+  spaces->w = (unsigned)c;
+  spaces->mat = realloc(spaces->mat, c * sizeof(Uint8));
+  free_vector(vect);
+  return spaces;
+}
 
 struct matrix* space()
 {
@@ -196,40 +221,65 @@ struct matrix* jumpline()
   return jump;
 }
 
-struct vector* blocks_detection(struct matrix* matrix, SDL_Surface* image)
-{
+struct vector* blocks_detection(struct matrix* matrix, SDL_Surface* image){
   unsigned w = matrix->w;
   unsigned h = matrix->h;
   struct vector* vect = init_vector(100);
   struct matrix* mark = init_matrix(w, h);
+  int filling = 0;
   for (unsigned y = 0; y < h; y++)
   {
-    //struct vector* space = spaces(image, y);
-    
-    unsigned count = 0;
-    for (unsigned x = 0; x < w; x++)
-      if (GetPixel(image, x, y) == 0 && mark->mat[x + y * w] == 0)
-      {
-        struct matrix* chara = mat_char(matrix, image, mark, x, y);
-        if (chara)
-        {
-          /*if (count > space->tab[space->size / 2])
-          {
-            struct matrix* space = space();
-            vector_add(vect, space);
-          }*/
-          vector_add(vect, chara);
-        }
-        count = 0;
-      }
-      else
-      {
-        count++;
-      }
-    if (count < w)
+    if (filling)
     {
+      struct matrix* spaces = spaces_list(image, y);
+      unsigned count = 0;
+      int words = 0;
+      for (unsigned x = 0; x < w; x++)
+      {
+        if (GetPixel(image, x, y) == 0)
+        {
+          if (mark->mat[x + y * w] == 0)
+          {
+            int i = y;
+            while (i > 0 && GetPixel(image, x, i - 1) == 0)
+              i--;
+            struct matrix* chara = mat_char(matrix, image, mark, x, i);
+            if (chara)
+            {
+              if (words && count >= spaces->mat[spaces->w / 2])
+              {
+                struct matrix* jump_space = space();
+                vector_add(vect, jump_space);
+              }
+              vector_add(vect, chara);
+            }
+          }
+          words++;
+          count = 0;
+        }
+        else
+          count++;
+      }
       struct matrix* jump = jumpline();
       vector_add(vect, jump);
+      free_matrix(spaces);
+      filling = 0;
+    }
+    else
+    {
+      for (unsigned x = 0; x < w; x++)
+      {
+        if (filling)
+          continue;
+        if (GetPixel(image, x, y) == 0 && mark->mat[x + y * w] == 0)
+        {
+          unsigned i = y;
+          while (i < h && GetPixel(image, x, i) == 0)
+            i++;
+          y += (i - y) / 2;
+          filling = 1;
+        }
+      }
     }
   }
   free_matrix(mark);
