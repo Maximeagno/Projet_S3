@@ -125,7 +125,7 @@ Uint8 average_grey(SDL_Surface* image)
     }
   if (average <= 128)
     image = revert(image);
-  return 127 + average / 5;
+  return 127 + average / 4;
 }
 
 SDL_Surface* black_white(SDL_Surface* image)

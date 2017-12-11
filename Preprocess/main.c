@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     char *path = argv[1];
 
     struct vector* res = GetVector(path);
-    for (unsigned i = 0; i < 15; i++)
+    for (unsigned i = 0; i < res->size; i++)
     {
       print_matrix(res->tab[i]);
       printf("\n");

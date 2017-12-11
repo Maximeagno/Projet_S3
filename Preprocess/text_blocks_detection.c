@@ -12,10 +12,8 @@ SDL_Surface* lines(SDL_Surface* image)
   {
     unsigned nb = 0;
     for (unsigned j = 0; j < h; j++)
-    {
       if (GetPixel(image, n, j) == 0)
         nb++;
-    }
     if (nb <= 0)
     {
       if (count > 0)
@@ -149,9 +147,7 @@ unsigned insert(Uint8 elm, struct matrix* matrix, unsigned count)
     if (matrix->mat[i] > elm)
     {
       for (unsigned j = count - 1; j > i; j--)
-      {
         matrix->mat[j + 1] = matrix->mat[j];
-      }
       matrix->mat[i + 1] = matrix->mat[i];
     }
     matrix->mat[i] = elm;
@@ -166,7 +162,6 @@ struct matrix* spaces_list(SDL_Surface* image, unsigned y)
   Uint8 counting =  0;
   Uint8 count = 0;
   for (unsigned x = 0; x < (unsigned)(image->h); x++)
-  {
     if (GetPixel(image, x, y) == 0)
     {
       if(counting == 0)
@@ -190,7 +185,6 @@ struct matrix* spaces_list(SDL_Surface* image, unsigned y)
       if (counting == 2)
         count++;
     }
-  }
   struct matrix* spaces = init_matrix(vect->size, 1);
   unsigned c = 0;
   for (unsigned i = 0; i < vect->size; i++)
@@ -221,14 +215,14 @@ struct matrix* jumpline()
   return jump;
 }
 
-struct vector* blocks_detection(struct matrix* matrix, SDL_Surface* image){
+struct vector* blocks_detection(struct matrix* matrix, SDL_Surface* image)
+{
   unsigned w = matrix->w;
   unsigned h = matrix->h;
   struct vector* vect = init_vector(100);
   struct matrix* mark = init_matrix(w, h);
   int filling = 0;
   for (unsigned y = 0; y < h; y++)
-  {
     if (filling)
     {
       struct matrix* spaces = spaces_list(image, y);
@@ -246,7 +240,7 @@ struct vector* blocks_detection(struct matrix* matrix, SDL_Surface* image){
             struct matrix* chara = mat_char(matrix, image, mark, x, i);
             if (chara)
             {
-              if (words && count >= spaces->mat[spaces->w / 2])
+              if (words && count > spaces->mat[spaces->w / 2])
               {
                 struct matrix* jump_space = space();
                 vector_add(vect, jump_space);
@@ -281,18 +275,11 @@ struct vector* blocks_detection(struct matrix* matrix, SDL_Surface* image){
         }
       }
     }
-  }
   free_matrix(mark);
-  return vect;
-}
-
-void print_chars(struct matrix* matrix, SDL_Surface* image)
-{
-  struct vector* vect = blocks_detection(matrix, image);
-  for (unsigned i = 0; i < vect->size; i++)
+  if (vect->size > 1)
   {
-    print_matrix(vect->tab[i]);
-    printf("\n");
+    vect->size--;
+    free_matrix(vect->tab[vect->size]);
   }
-  free_vector(vect);
+  return vect;
 }
