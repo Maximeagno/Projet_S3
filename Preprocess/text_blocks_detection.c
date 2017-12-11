@@ -62,7 +62,7 @@ SDL_Surface* columns(struct matrix* src, SDL_Surface* image)
       else
         if (count > 0)
         {
-          int b = 0;
+          unsigned b = 0;
           unsigned i = 0;;
           while (i < count && b == 0)
           {
@@ -240,7 +240,7 @@ struct vector* blocks_detection(struct matrix* matrix, SDL_Surface* image)
             struct matrix* chara = mat_char(matrix, image, mark, x, i);
             if (chara)
             {
-              if (words && count > spaces->mat[spaces->w / 2])
+              if (words && count > 2 * spaces->mat[spaces->w / 4])
               {
                 struct matrix* jump_space = space();
                 vector_add(vect, jump_space);
