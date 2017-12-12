@@ -32,6 +32,10 @@ void Quit() {
 void on_ContinueButton_clicked() {
   gtk_widget_hide(window);
   gtk_widget_show(window2);
+  GtkSpinButton *spin_button = GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "Input1"));
+  GtkSpinButton *spin_button2 = GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "Input2"));
+  gtk_spin_button_set_range(spin_button, 0, 1);
+  gtk_spin_button_set_range(spin_button2, 0, 1);
 }
 
 void UnlockBinarizationButton() {
@@ -55,7 +59,7 @@ void UnlockSButton() {
 GdkPixbuf *ResizeImage(GtkImage *image)
 {
   GdkPixbuf *pixbuf = gtk_image_get_pixbuf(image);
-  
+
   int orig_width = gdk_pixbuf_get_width(pixbuf);
   int orig_height = gdk_pixbuf_get_height(pixbuf);
   if (orig_width > 600 || orig_height > 400) {
@@ -71,7 +75,7 @@ void DisplayImage(GtkFileChooser *chooser, GtkImage *image) {
   char *path = gtk_file_chooser_get_filename(selectImage);
 
   gtk_image_set_from_file(image, path);
-  
+
   //Resize image
   GdkPixbuf *new_pixbuf = ResizeImage(image);
   gtk_image_set_from_pixbuf(image, new_pixbuf);
@@ -171,4 +175,13 @@ void Run(GtkButton *button, GtkLabel *label) {
   if (text)
     gtk_label_set_text(label, text);
   g_free(path);
+}
+
+void TakeValue() {
+  //GtkSpinButton *spin1 = GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "Input1"));
+  GtkLabel *label = GTK_LABEL(gtk_builder_get_object(builder, "res"));
+  //int i = gtk_spin_button_get_value_as_int(spin1);
+  const char *c = "ap";
+  gtk_label_set_text(label, c);
+
 }
