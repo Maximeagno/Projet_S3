@@ -52,11 +52,12 @@ void UnlockSButton() {
   GtkWidget *save_button = GTK_WIDGET(gtk_builder_get_object(builder, "save_button"));
   gtk_widget_set_sensitive(save_button, TRUE);
 }
-GdkPixbuf *ResizeImage(GdkPixbuf *pixbuf)
+GdkPixbuf *ResizeImage(GtkImage *image)
 {
+  GdkPixbuf *pixbuf = gtk_image_get_pixbuf(image);
+  
   int orig_width = gdk_pixbuf_get_width(pixbuf);
   int orig_height = gdk_pixbuf_get_height(pixbuf);
-
   if (orig_width > 600 || orig_height > 400) {
      orig_width = 600;
      orig_height = 400;
@@ -68,12 +69,11 @@ GdkPixbuf *ResizeImage(GdkPixbuf *pixbuf)
 void DisplayImage(GtkFileChooser *chooser, GtkImage *image) {
   GtkFileChooser *selectImage = GTK_FILE_CHOOSER(gtk_builder_get_object(builder, "selectImage"));
   char *path = gtk_file_chooser_get_filename(selectImage);
-  
-  gtk_image_set_from_file(image, path);
 
+  gtk_image_set_from_file(image, path);
+  
   //Resize image
-  GdkPixbuf *pixbuf = gtk_image_get_pixbuf(image);
-  GdkPixbuf *new_pixbuf = ResizeImage(pixbuf);
+  GdkPixbuf *new_pixbuf = ResizeImage(image);
   gtk_image_set_from_pixbuf(image, new_pixbuf);
   gtk_file_chooser_set_filename(chooser, path);
 
@@ -90,8 +90,7 @@ void Binarization(GtkButton *button, GtkFileChooser *selectImage) {
   gtk_image_set_from_file(image1, "image_1.bmp");
 
   //Resize
-  GdkPixbuf *pixbuf = gtk_image_get_pixbuf(image1);
-  GdkPixbuf *new_pixbuf = ResizeImage(pixbuf);
+  GdkPixbuf *new_pixbuf = ResizeImage(image1);
   gtk_image_set_from_pixbuf(image1, new_pixbuf);
 
   SDL_FreeSurface(image);
@@ -113,8 +112,7 @@ void Segmentation(GtkButton *button, GtkImage *img) {
 
 
   //Resize
-  GdkPixbuf *pixbuf = gtk_image_get_pixbuf(img);
-  GdkPixbuf *new_pixbuf = ResizeImage(pixbuf);
+  GdkPixbuf *new_pixbuf = ResizeImage(img);
   gtk_image_set_from_pixbuf(img, new_pixbuf);
   
   free_matrix(res);
@@ -170,6 +168,7 @@ void Run(GtkButton *button, GtkLabel *label) {
   GtkFileChooser *selectImage = GTK_FILE_CHOOSER(gtk_builder_get_object(builder, "selectImage"));
   char *path = gtk_file_chooser_get_filename(selectImage);
   char *text = Interface(path, "../ReseauNew/trainAll.txt");
-  gtk_label_set_text(label, text);
+  if (text)
+    gtk_label_set_text(label, text);
   g_free(path);
 }

@@ -16,7 +16,7 @@ void UnlockBinarizationButton();
 void UnlockSegmentationButton();
 void UnlockRButton();
 void UnlockSButton();
-GdkPixbuf *ResizeImage(GdkPixbuf *pixbuf);
+GdkPixbuf *ResizeImage(GtkImage *image);
 void DisplayImage(GtkFileChooser *chooser, GtkImage *image);
 void Binarization(GtkButton *button, GtkFileChooser *selectImage);
 SDL_Surface* detection_gtk(struct matrix* matrix, SDL_Surface* image);
